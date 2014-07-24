@@ -9,7 +9,20 @@ Written By: Nicolas Broeking */
 class MainApplication
 {
 public:
+	static MainApplication* app;
+	static MainApplication* getApplication();
+	static void cleanUp();
+
+	virtual void applicationWillLaunch();
+	virtual void applicationWillTerminate();
+	virtual void pleaseClose();
+
 protected:
-private:
+	MainApplication();
+	~MainApplication();
+
+	bool isRunning;
+	bool shouldRun;
+
 };
 #endif
