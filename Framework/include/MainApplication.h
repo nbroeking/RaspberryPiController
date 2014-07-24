@@ -3,11 +3,13 @@ Pattern: Singleton
 File: MainApplicaion.mm
 Written By: Nicolas Broeking */
 
-@interface MainApplication
-{
-	static MainApplication* app;
-}
+#ifndef __MainApplication__
+#define __MainApplication__
 
-+(MainApplication*) getApp;
-+(void)cleanUp;
-@end
+class MainApplication
+{
+public:
+protected:
+private:
+};
+#endif

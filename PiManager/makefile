@@ -1,21 +1,24 @@
-CC=/usr/bin/arm-linux-gnueabi-gcc-4.7
-#CC=gcc
-LDFLAGS= -lobjc
-HEADERS= -I/home/nbroeking/Documents/Framework/include
-DEPENDS= main.o Application.o
-PROJECT=Manager
+CC=gcc
+#CC=/usr/bin/arm-linux-gnueabi-gcc-4.7'
+LDFLAGS=
+CFLAGS= -Wall -g -I/home/nbroeking/Documents/Framework/include
+export CC
+export LDFLAGS
+export CFLAGS
 
-.PHONY: all clean
+.PHONY: all clean gen clobber
 
-all: $(DEPENDS)
-	$(CC) $(DEPENDS) $(LDFLAGS) -o $(PROJECT)
+all:
+	-mkdir obs
+	$(MAKE) -f raspberrypi.mk
 
-Application.o: Framework/classes/Application.m
-	$(CC) $< $(HEADERS) $(CCFLAGS) -c -o $@
-
-main.o: PiManager/main.m
-	$(CC) $< $(HEADERS) $(CCFLAGS) -c -o $@
-
+gen:
+	./gen.sh
 clean:
-	rm *.o
-	rm Manager
+	-rm -rf obs
+	-rm Manager
+
+clobber:
+	-rm -rf obs
+	-rm Manager
+	-rm raspberrypi.mk

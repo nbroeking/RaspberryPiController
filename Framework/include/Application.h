@@ -2,8 +2,16 @@
 Pattern: Singleton
 Uses: Should be run from the main.m */
 
-@interface Application
 
-+(int) run: (int) argc : (char**)argv;
+#ifndef __Application__
+#define __Application__
 
-@end
+class Application
+{
+
+public:
+	static int run ();
+
+};
+
+#endif
