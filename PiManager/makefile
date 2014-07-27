@@ -1,7 +1,7 @@
-CC=gcc
+CC=g++
 #CC=/usr/bin/arm-linux-gnueabi-gcc-4.7'
 LDFLAGS=
-CFLAGS= -Wall -g -I/home/nbroeking/Documents/Framework/include
+CFLAGS= -Wall -g -I/home/nbroeking/Documents/Framework/include -std=c++11
 export CC
 export LDFLAGS
 export CFLAGS
