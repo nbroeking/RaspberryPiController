@@ -1,6 +1,7 @@
 #include "MainApplication.h"
 #include "ScopedLock.h"
 #include "Event.h"
+#include "Log.h"
 
 using namespace std;
 
@@ -42,16 +43,17 @@ int MainApplication::run()
 	applicationWillLaunch();
 	while (shouldRun)
 	{
-		ScopedLock s(m);
+	//	ScopedLock s(m);
 		Event e = q.pop();
 		if( e.getType() == QUIT )
 		{
-			fprintf(stderr, "\nHandle the Quit Event \n");
+			SystemLog("Main Application recieved a quit event");
 			shouldRun = false;
+			player->pleaseDie();
 		}
 		else
 		{
-			fprintf(stderr, "\n Handling an event \n");
+			SystemLog("Main Application recieved an event");
 		}
 	}
 	m.lock();
@@ -73,6 +75,7 @@ runMutex()
 	isRunning = false;
 	shouldRun = false;
 	//Create the event queue
+	player = new Player();
 	m.unlock();
 }
 
@@ -82,18 +85,23 @@ MainApplication::~MainApplication()
 	m.lock();
 
 	//Destruct memory
+	delete player;
+
 	m.unlock();	
 }
 void MainApplication::applicationWillLaunch()
 {
 	m.lock();
 	//Do setup for running
+	player->run();
 	m.unlock();
+	
 }
 void MainApplication::applicationWillTerminate()
 {
 	m.lock();
 	//Do Tear down for closing
+	
 	m.unlock();
 }
 void MainApplication::pleaseDie()
