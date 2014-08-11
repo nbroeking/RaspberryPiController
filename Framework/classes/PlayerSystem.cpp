@@ -2,7 +2,7 @@
 #include "ScopedLock.h"
 #include <stdlib.h>
 #include "Log.h"
-#include "QtMultimedia/QtMultimedia"
+//#include "QtMultimedia/QtMultimedia"
 
 using namespace std;
 Player::Player():
@@ -58,10 +58,11 @@ void Player::mainLoop()
 		}
 		else
 		{
-			QMediaPlayer *player = new QMediaPlayer();
-			player->setMedia(QUrl::fromLocalFile("/home/nbroeking/Documents/PiManager/Media/onemorenight.wav"));	
-			player->setVolume(50);
-			player->play();
+//			QMediaPlayer *player = new QMediaPlayer();
+//			player->setMedia(QUrl::fromLocalFile("/home/nbroeking/Documents/PiManager/Media/onemorenight.wav"));	
+//			player->setVolume(50);
+//			player->play();
+			SystemLog( "Player Manager recieved anoter event");
 
 		}
 	}
