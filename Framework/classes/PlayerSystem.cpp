@@ -2,6 +2,9 @@
 #include "ScopedLock.h"
 #include <stdlib.h>
 #include "Log.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
+
 //#include "QtMultimedia/QtMultimedia"
 
 using namespace std;
@@ -62,6 +65,7 @@ void Player::mainLoop()
 //			player->setMedia(QUrl::fromLocalFile("/home/nbroeking/Documents/PiManager/Media/onemorenight.wav"));	
 //			player->setVolume(50);
 //			player->play();
+//			Mix_Music *music = NULL;
 			SystemLog( "Player Manager recieved anoter event");
 
 		}

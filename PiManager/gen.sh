@@ -39,18 +39,18 @@ echo '.PHONY: all clean\n'>&3
 
 echo -e \
 'all: obs/main.o $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) $< $(LIBS) -o $(BINARY) \n'>&3
+	$(CC) $(CFLAGS) $(OBJECTS) $< $(LDFLAGS) $(LIBS) -o $(BINARY) \n'>&3
 
 echo -e \
 'obs/main.o: main.cpp
-	$(CC) -c $(CFLAGS) $< -o $@\n'>&3
+	$(CC) -c $(CFLAGS) $< $(LDFLAGS) -o $@\n'>&3
 
 
 # iterate through all of the objects and 
 # add a rule for the binary
 for ((i=0;i<${#obs[@]};i++)) ; do
     echo "Object file: ${obs[$i]}"
-	echo -e "${obs[$i]}: ${src[$i]}\n\t"'$(CC) $< -c $(CFLAGS) -o $@\n'>&3
+	echo -e "${obs[$i]}: ${src[$i]}\n\t"'$(CC) -c $(CFLAGS) $< $(LDFLAGS) -o $@\n'>&3
 done
 # close Makefile
 exec 3>&-
