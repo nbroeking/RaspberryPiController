@@ -1,6 +1,7 @@
 #include "Application.h"
 #include <stdio.h>
 #include <signal.h>
+#include "Log.h"
 
 using namespace std;
 
@@ -26,7 +27,6 @@ int Application::run()
 
 void sigKillRecieved(int a)
 {
-	fprintf( stderr, "\nSigKillWasRecieved the application has been asked to close\n");
-
+	SystemLog("SigKill was recieved. Asking the application to close");
 	MainApplication::getApplication()->getApplication()->pleaseDie();
 }
