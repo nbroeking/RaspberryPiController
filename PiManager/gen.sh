@@ -31,26 +31,28 @@ exec 3<> raspberrypi.mk
 
 # some commonly used files to generate
 echo "CC=$CC">&3
+echo "LL=$LL">&3
 echo "CFLAGS=$CFLAGS">&3
 echo "LDFLAGS=$LDFLAGS">&3
+echo "LIBS=$LIBS">&3
 echo 'OBJECTS='${obs[@]}>&3
 echo 'BINARY='$BINARY_NAME>&3
-echo '.PHONY: all clean\n'>&3
+echo '.PHONY: all clean'>&3
 
 echo -e \
 'all: obs/main.o $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) $< $(LDFLAGS) $(LIBS) -o $(BINARY) \n'>&3
+	$(LL) $(OBJECTS) $< $(LDFLAGS) $(LIBS) -pthread -std=c++11 -o $(BINARY) \n'>&3
 
 echo -e \
 'obs/main.o: main.cpp
-	$(CC) -c $(CFLAGS) $< $(LDFLAGS) -o $@\n'>&3
+	$(CC) -c $(CFLAGS) $< -pthread -std=c++11 -o $@\n'>&3
 
 
 # iterate through all of the objects and 
 # add a rule for the binary
 for ((i=0;i<${#obs[@]};i++)) ; do
     echo "Object file: ${obs[$i]}"
-	echo -e "${obs[$i]}: ${src[$i]}\n\t"'$(CC) -c $(CFLAGS) $< $(LDFLAGS) -o $@\n'>&3
+	echo -e "${obs[$i]}: ${src[$i]}\n\t"'$(CC) -c $(CFLAGS) $< -pthread -std=c++11 -o $@\n'>&3
 done
 # close Makefile
 exec 3>&-

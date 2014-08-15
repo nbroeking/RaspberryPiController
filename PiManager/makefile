@@ -1,9 +1,18 @@
 CC=g++
+LL=g++
 #CC=/usr/bin/arm-linux-gnueabi-gcc-4.7'
-LDFLAGS= -Wall
-CFLAGS= -Wall -g -lpthread --std=c++11 -I/home/nbroeking/Documents/Framework/include -I/home/nbroeking/Documents/Librarys/x86/include -I/home/nbroeking/Documents/Librarys/x86 -I/home/nbroeking/Documents/Librarys/x86/5.3/gcc_64/include
-LIBS = -lpthread --std=c++11 -ldl -L /home/nbroeking/Documents/Librarys/x86/5.3/gcc_64/lib -lSDL -lSDL_mixer
+
+INCLUDE=  -I/home/nbroeking/Documents/Framework/include \
+-I/home/nbroeking/Documents/Librarys/x86/include \
+-I/home/nbroeking/Documents/Librarys/x86 \
+-I/home/nbroeking/Documents/Librarys/x86/5.3/gcc_64/include
+
+LDFLAGS= -Wl,--no-as-needed -lpthread
+CFLAGS= -Wall -g  -Wl,--no-as-needed $(INCLUDE)
+LIBS = -ldl -L /home/nbroeking/Documents/Librarys/x86/5.3/gcc_64/lib -lSDL -lSDL_mixer
+
 export CC
+export LL
 export LDFLAGS
 export CFLAGS
 export LIBS
