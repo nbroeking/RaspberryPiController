@@ -22,6 +22,7 @@ int Application::run()
 	MainApplication::cleanUp();
 	m.unlock();
 
+	SystemLog("Pi Manager has closed");
 	return result;
 }
 

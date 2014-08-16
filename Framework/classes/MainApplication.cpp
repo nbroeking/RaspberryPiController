@@ -49,7 +49,9 @@ int MainApplication::run()
 		{
 			SystemLog("Main Application recieved a quit event");
 			shouldRun = false;
+			SystemError("Player Application will be asked to closed");
 			player->pleaseDie();
+			SystemError("Player Application was asked to closed");
 		}
 		else
 		{
@@ -71,45 +73,46 @@ m(),
 q(),
 runMutex()
 {
-	m.lock();
+//	m.lock();
 	isRunning = false;
 	shouldRun = false;
 	//Create the event queue
 	player = new Player();
-	m.unlock();
+//	m.unlock();
 }
 
 
 MainApplication::~MainApplication()
 {
-	m.lock();
+//	m.lock();
 
 	//Destruct memory
-	delete player;
+ 	delete player;
 
-	m.unlock();	
+//	m.unlock();	
 }
 void MainApplication::applicationWillLaunch()
 {
-	m.lock();
+//	m.lock();
 	//Do setup for running
 	player->run();
-	m.unlock();
+//	m.unlock();
 	
 }
 void MainApplication::applicationWillTerminate()
 {
-	m.lock();
+//	m.lock();
 	//Do Tear down for closing
 	
-	m.unlock();
+//	m.unlock();
 }
 void MainApplication::pleaseDie()
 {
-	m.lock();
+	SystemLog("Please Die in Main Application");
+//	m.lock();
 	//Add a close event to the application
 	Event quit;
 	quit.setType(QUIT);
 	q.push(quit);
-	m.unlock();
+//	m.unlock();
 }

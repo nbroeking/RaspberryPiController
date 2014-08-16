@@ -9,7 +9,7 @@ INCLUDE=  -I/home/nbroeking/Documents/Framework/include \
 
 LDFLAGS= -Wl,--no-as-needed -lpthread
 CFLAGS= -Wall -g  -Wl,--no-as-needed $(INCLUDE)
-LIBS = -ldl -L /home/nbroeking/Documents/Librarys/x86/5.3/gcc_64/lib -lSDL -lSDL_mixer
+LIBS = -ldl -L /home/nbroeking/Documents/Librarys/x86/5.3/gcc_64/lib
 
 export CC
 export LL

@@ -39,7 +39,6 @@ void Player::run()
 	isRunning = true;
 	shouldRun = true;
 	this->th = new thread(&Player::mainLoop, this);	
-	mainLoop();
 }
 void Player::mainLoop()
 {
@@ -73,10 +72,13 @@ void Player::mainLoop()
 }
 void Player::pleaseDie()
 {
-	ScopedLock s( queueMutex );
+//	ScopedLock s( queueMutex );
+
+	SystemLog("Asking the Player Manager to quit");
 	Event quit;
 	quit.setType(QUIT);
 	q.push(quit);
+	SystemLog("Player Manager is queued to quit");
 }
 
 
