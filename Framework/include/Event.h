@@ -10,7 +10,7 @@
 #ifndef __NicEvent__
 #define __NicEvent__
 
-enum Type { NOOP, QUIT, NUM};
+enum Type { NOOP, QUIT, STOP, PLAY, NUM};
 
 #include <mutex>
 #include <string>

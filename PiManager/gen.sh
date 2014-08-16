@@ -10,6 +10,9 @@ BINARY_NAME="Manager"
 
 # Iterate through and find the
 # c++ source files 
+
+cnt=0
+
 for i in $(find /home/nbroeking/Documents/Framework/classes/ | egrep '.*\.c(pp|xx)?$') ; do
 	# add this file to the list of
 	# sources
@@ -22,6 +25,19 @@ for i in $(find /home/nbroeking/Documents/Framework/classes/ | egrep '.*\.c(pp|x
 	cnt=$[cnt + 1]
 done
 
+# Iterate through and find the
+# c++ source files 
+for i in $(find /home/nbroeking/Documents/PiManager/classes/ | egrep '.*\.c(pp|xx)?$') ; do
+	# add this file to the list of
+	# sources
+	deps="$( echo $i | sed 's/^src\/*//')"
+
+	# add the resulting object file to
+	# the objects
+	src[$cnt]=$deps
+	obs+=("obs/`basename $i | sed -r 's/\.(cpp|cxx)/.o/g'`")
+	cnt=$[cnt + 1]
+done
 # remove the Makefile if it exists
 rm -f raspberrypi.mk || true
 
