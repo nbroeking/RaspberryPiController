@@ -6,24 +6,50 @@
 #include <SDL/SDL_mixer.h>
 
 //#include "QtMultimedia/QtMultimedia"
-
 using namespace std;
+
+static Player* p = NULL;
+
 Player::Player():
 queueMutex(),
-q()
-{
+q(),
+audio()
+{	
 	ScopedLock s(queueMutex);
+	state = IDLE;
+
+	p = this;
 	isRunning = false;
 	shouldRun = false;
-	th = NULL;		
+	th = NULL;
+
+	if( SDL_LoadWAV("/home/nbroeking/Documents/PiManager/Media/onemorenight.wav", &audio, &audio_chunk, &audio_len ) == NULL)
+	{
+
+	}	
+	//Set up audio
+	audio.callback = play_audio;
+
+	if( SDL_OpenAudio(&audio, NULL) < 0 )
+	{
+		fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
+	}			
+	
 }
 Player::~Player()
 {
 	ScopedLock s(queueMutex);
 	//Destruct Memory
+
+	if( state != IDLE )
+	{
+		SDL_CloseAudio();
+		SDL_FreeWAV(audio_chunk);
+	}
+	p = NULL;
 	if( (th != NULL)&&(th->joinable()))
 	{
-		SystemLog("Joining the player manager thread");
+	//	SystemLog("Joining the player manager thread");
 		this->th->join();
 		SystemLog( "Joined the player manager thread");
 	}
@@ -56,16 +82,36 @@ void Player::mainLoop()
 		if( e.getType() == QUIT )
 		{
 			SystemLog("Player Manager is asked to die");
+			SDL_PauseAudio(1);
 			runloop = shouldRun = false;
+		}
+		else if( e.getType() == STOP )
+		{
+			SDL_PauseAudio(1);
+			state = STOPPED;
+		}
+		else if( e.getType() == PLAY )
+		{
+			SDL_PauseAudio(0);
+			state = PLAYING;
 		}
 		else
 		{
-//			QMediaPlayer *player = new QMediaPlayer();
-//			player->setMedia(QUrl::fromLocalFile("/home/nbroeking/Documents/PiManager/Media/onemorenight.wav"));	
-//			player->setVolume(50);
-//			player->play();
-//			Mix_Music *music = NULL;
-			SystemLog( "Player Manager recieved anoter event");
+			if( state == PLAYING )
+			{
+				SystemError("Song already playing: can't play two songs at once");
+				continue;
+			}
+
+			state = PLAYING;
+
+			SystemLog("Trying to play a song with SDL");
+			
+			audio_pos = audio_chunk;
+	
+			//Start Playing
+			/* Let the callback function play the audio chunk */
+			SDL_PauseAudio(0);
 
 		}
 	}
@@ -81,4 +127,31 @@ void Player::pleaseDie()
 	SystemLog("Player Manager is queued to quit");
 }
 
+void Player::playmusic(void* udata, Uint8 *stream, int len)
+{
+	/* Only play if we have data left */
+	if ( audio_len == 0 )
+	{
+		return;
+	}
 
+	/* Mix as much data as possible */
+	len = ( len > (int)audio_len ? audio_len : len );
+	SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME);
+	audio_pos += len;
+	audio_len -= len;
+
+}
+/* The audio function callback takes the following parameters:
+  stream:  A pointer to the audio buffer to be filled
+  len:     The length (in bytes) of the audio buffer
+*/
+void play_audio(void *udata, Uint8 *stream, int len)
+{
+	if( p == NULL)
+	{
+		SystemError("The player object is dead");
+		return;
+	}
+	p->playmusic(udata, stream, len);
+}
