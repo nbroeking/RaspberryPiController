@@ -9,6 +9,7 @@ Written By: Nicolas Broeking */
 #include "EventQueue.h"
 #include <mutex>
 #include "PlayerSystem.h"
+#include "CommSystem.h"
 
 class MainApplication
 {
@@ -33,5 +34,6 @@ protected:
 	BlockingQueue q;
 	std::mutex runMutex; // So only one thread can run the application at a time
 	Player *player;
+	CommManager* communications;
 };
 #endif

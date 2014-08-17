@@ -2,6 +2,7 @@
 #include "ScopedLock.h"
 #include "Event.h"
 #include "Log.h"
+#include "ServerSocket.h"
 
 using namespace std;
 
@@ -78,6 +79,7 @@ runMutex()
 	shouldRun = false;
 	//Create the event queue
 	player = new Player();
+	communications = new CommManager();
 //	m.unlock();
 }
 
@@ -88,6 +90,7 @@ MainApplication::~MainApplication()
 
 	//Destruct memory
  	delete player;
+	delete communications;
 
 //	m.unlock();	
 }
@@ -96,6 +99,7 @@ void MainApplication::applicationWillLaunch()
 //	m.lock();
 	//Do setup for running
 	player->run();
+	communications->run();
 //	m.unlock();
 	
 }
