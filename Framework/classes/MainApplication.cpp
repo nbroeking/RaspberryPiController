@@ -48,11 +48,12 @@ int MainApplication::run()
 		Event e = q.pop();
 		if( e.getType() == QUIT )
 		{
-			SystemLog("Main Application recieved a quit event");
+//			SystemLog("Main Application recieved a quit event");
 			shouldRun = false;
-			SystemError("Player Application will be asked to closed");
 			player->pleaseDie();
-			SystemError("Player Application was asked to closed");
+//			SystemLog("Player Application was asked to closed");
+			communications->pleaseDie();
+//			SystemLog("Communication was asked to close");
 		}
 		else
 		{
@@ -112,11 +113,9 @@ void MainApplication::applicationWillTerminate()
 }
 void MainApplication::pleaseDie()
 {
-	SystemLog("Please Die in Main Application");
-//	m.lock();
+//	SystemLog("Please Die in Main Application");
 	//Add a close event to the application
 	Event quit;
 	quit.setType(QUIT);
 	q.push(quit);
-//	m.unlock();
 }

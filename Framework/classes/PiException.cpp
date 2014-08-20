@@ -3,7 +3,8 @@
 
 PiException::PiException():
 exception(), 
-msg(SDL_GetError()) 
+msg("SDLERROR")
+//msg(SDL_GetError()) 
 {}
 
 PiException::PiException(const std::string& m):

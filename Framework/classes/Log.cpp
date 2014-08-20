@@ -4,7 +4,7 @@ using namespace std;
 
 void SystemLog(std::string log)
 {
-	cout << "Pi Log: " << log << endl;
+	cout << "Pi Log: " << log << "\n";
 }
 void SystemError(std::string log)
 {

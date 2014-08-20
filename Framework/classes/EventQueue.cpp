@@ -22,7 +22,7 @@ void BlockingQueue::push(Event e)
 //	SystemLog("We are not blocked");
 	q->push(e);
 	cond.notify_one();
-	SystemLog("We pushed the event");
+//	SystemLog("We pushed the event");
 	//Signal Free
 }
 Event BlockingQueue::pop()
