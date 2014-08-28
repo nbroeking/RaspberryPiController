@@ -7,12 +7,14 @@
 
 using namespace std;
 
-CommManager::CommManager():
+CommManager::CommManager(Player* play):
 queueMutex(),
 q(),
 connections(),
 deletion()
 {	
+	player = play;
+	player->registerComm(this);
 	ScopedLock s(queueMutex);
 
 	isRunning = false;
@@ -51,6 +53,11 @@ void CommManager::mainLoop()
 	SystemLog("Started the communication manager thread");
 	bool runloop = true;	
 
+	//We need a player manager to run
+	if( player == NULL )
+	{
+		return;
+	}
 	//Socket starts in its own thread and will start 
 	//ServerSocket*	sock =
 	ServerSocket *sock = new ServerSocket(54321, this);
@@ -113,9 +120,10 @@ void CommManager::mainLoop()
 				connections.erase(it);
 			}
 		}
-		else
+		else //Its a player event
 		{
 			SystemLog("CommManager Manager received an event");
+			player->addEvent(e);
 		}
 	}
 

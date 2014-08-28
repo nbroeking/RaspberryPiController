@@ -73,20 +73,29 @@ void Socket::mainLoop()
 			if( command == "PLAY" )
 			{
 				SystemLog("Play");
+				Event e;
+				e.setType(PLAY);
+				owner->addEvent(e);
 			}
 			else if( command == "STOP")
 			{
 				SystemLog("Stop");
+				Event e;
+				e.setType(STOP);
+				owner->addEvent(e);
 			}	
 			else if( command == "PAUS" )
 			{
 				SystemLog("Pause");
+				Event e;
+				e.setType(PAUSE);
+				owner->addEvent(e);
 			}
 			else
 			{
 				SystemError("Error unknown command arrived");
 			}
-			fprintf(stdout, "%s the socket read %d bytes with length %lu\n", command.c_str(), bytesRead, length);
+		//	fprintf(stdout, "%s the socket read %d bytes with length %lu\n", command.c_str(), bytesRead, length);
 		}
 		delete [] buffer;	
 	}

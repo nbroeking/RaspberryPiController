@@ -14,6 +14,8 @@
 //#include "SDL/SDL.h"
 
 
+class CommManager;
+
 enum State { IDLE, PLAYING, STOPPED };
 
 class Player
@@ -23,11 +25,14 @@ public:
 	virtual	~Player();
 	virtual void run();
 	virtual void pleaseDie();
-	
-//	void playmusic(void* udata, Uint8 *stream, int len);	
+	virtual void addEvent(Event);	
+//	void playmusic(void* udata, Uint8 *stream, int len);
+	virtual void registerComm(CommManager*);	
 protected:
 	bool isRunning;
 	bool shouldRun;
+
+	CommManager* communications;
 
 	std::mutex queueMutex;
 	

@@ -80,7 +80,7 @@ runMutex()
 	shouldRun = false;
 	//Create the event queue
 	player = new Player();
-	communications = new CommManager();
+	communications = new CommManager(player);
 //	m.unlock();
 }
 

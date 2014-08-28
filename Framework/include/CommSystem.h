@@ -20,7 +20,7 @@
 class CommManager 
 {
 public:
-	CommManager();
+	CommManager(Player *play = NULL);
 	virtual	~CommManager();
 	virtual void run();
 	virtual void pleaseDie();
@@ -33,6 +33,7 @@ protected:
 	bool isRunning;
 	bool shouldRun;
 
+	Player* player;
 	std::mutex queueMutex;
 	
 	BlockingQueue q;

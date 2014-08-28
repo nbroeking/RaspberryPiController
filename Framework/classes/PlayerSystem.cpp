@@ -69,11 +69,20 @@ void Player::run()
 	shouldRun = true;
 	this->th = new thread(&Player::mainLoop, this);	
 }
+void Player::registerComm(CommManager* c)
+{
+	communications = c;
+}
 void Player::mainLoop()
 {
 	SystemLog("Started the player manager thread");
 	bool runloop = true;	
 
+	//We need communications
+	if( communications == NULL )
+	{
+		return;
+	}
 	while( runloop )
 	{
 		//ScopedLock s( queueMutex );
@@ -85,20 +94,28 @@ void Player::mainLoop()
 //			SDL_PauseAudio(1);
 			runloop = shouldRun = false;
 		}
+		else if( e.getType() == NOOP )
+		{
+			SystemLog("Player: NOOP");
+		}
 		else if( e.getType() == STOP )
 		{
 			ScopedLock l(queueMutex);
 //			SDL_PauseAudio(1);
 			state = STOPPED;
+
+			SystemLog("Player Manager Stoped Song Event");
 		}
 		else if( e.getType() == PLAY )
 		{
 			ScopedLock l(queueMutex);
 //			SDL_PauseAudio(0);
 			state = PLAYING;
+			SystemLog("Player Manager Played Song Event");
 		}
 		else
 		{
+			SystemLog("Player Manager Started Song Event");
 			ScopedLock l(queueMutex);
 /*			if( state == PLAYING )
 			{
@@ -129,6 +146,17 @@ void Player::pleaseDie()
 //	SystemLog("Player Manager is queued to quit");
 }
 
+void Player::addEvent(Event e)
+{
+	queueMutex.lock();
+	if( !shouldRun)
+	{
+		queueMutex.unlock();
+		return;
+	}
+	queueMutex.unlock();
+	q.push(e);
+}
 //void Player::playmusic(void* udata, Uint8 *stream, int len)
 //{
 	/* Only play if we have data left */
