@@ -22,18 +22,21 @@ deletion()
 }
 CommManager::~CommManager()
 {
-	ScopedLock s(queueMutex);
+//	ScopedLock s(queueMutex);
 	//Destruct Memory
-
+	queueMutex.lock();
 	if( (th != NULL)&&(th->joinable()))
-	{
+	{	
+		queueMutex.unlock();
 		this->th->join();
 		SystemLog( "Joined the comm  manager thread");
+		queueMutex.lock();
 	}
 	if( th != NULL )
 	{
 		delete th;
 	}
+	queueMutex.unlock();
 
 }
 void CommManager::run()
@@ -61,21 +64,23 @@ void CommManager::mainLoop()
 			runloop = shouldRun = false;
 
 			sock->pleaseDie();
-
+			SystemLog("Server Socket has been asked to die");
 			ScopedLock l(queueMutex); 
 			//Clean up the sockets
-
+			SystemLog("Before connections");
 			for( std::vector<Socket*>::iterator it = connections.begin(); it != connections.end(); ++it)
 			{
 				(*it)->pleaseDie();
 			}
+			SystemLog("Middle Connections");
 			for( std::vector<Socket*>::iterator it = connections.begin(); it != connections.end(); ++it)
 			{
 				delete *it;
 			}
-
+			SystemLog("Almost there");
 			connections.erase(connections.begin(), connections.end());
 			deletion.erase(deletion.begin(), deletion.end());
+			SystemLog("Communications finished processing quit event");
 		}
 		else if( e.getType() == NEWSOCKET )
 		{
@@ -86,6 +91,7 @@ void CommManager::mainLoop()
 		}
 		else if( e.getType() == CLEANUP )
 		{
+			ScopedLock l(queueMutex);
 			SystemLog("Clean Up Event");
 			Socket* del = deletion.back();
 			deletion.pop_back();
@@ -121,11 +127,21 @@ void CommManager::mainLoop()
 void CommManager::socketCreated(Socket* sock)
 {
 	ScopedLock s(queueMutex);
+	if( !shouldRun )
+	{
+		return;
+	}
 	connections.push_back(sock);
 	SystemLog("Socket registered with the Comm Manager");
 }
 void CommManager::socketDestroyed(Socket* sock)
 {
+//	queueMutex.lock();
+	if( !shouldRun )
+	{
+//		queueMutex.unlock();
+		return;
+	}
 	SystemLog("Socket has disconnected");
 	queueMutex.lock();
 	deletion.push_back(sock);
@@ -149,5 +165,12 @@ void CommManager::pleaseDie()
 }
 void CommManager::addEvent(Event e)
 {
+	queueMutex.lock();
+	if( !shouldRun )
+	{
+		queueMutex.unlock();
+		return;
+	}
+	queueMutex.unlock();
 	q.push(e);
 }

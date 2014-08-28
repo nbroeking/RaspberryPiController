@@ -38,9 +38,10 @@ q()//,
 }
 Player::~Player()
 {
-	ScopedLock s(queueMutex);
+//	ScopedLock s(queueMutex);
 	//Destruct Memory
 
+	queueMutex.lock();
 	if( state != IDLE )
 	{
 	//		SDL_CloseAudio();
@@ -49,15 +50,17 @@ Player::~Player()
 	p = NULL;
 	if( (th != NULL)&&(th->joinable()))
 	{
+		queueMutex.unlock();
 	//	SystemLog("Joining the player manager thread");
 		this->th->join();
 		SystemLog( "Joined the player manager thread");
+		queueMutex.lock();
 	}
 	if( th != NULL )
 	{
 		delete th;
 	}
-
+	queueMutex.unlock();
 }
 void Player::run()
 {
@@ -77,22 +80,26 @@ void Player::mainLoop()
 		Event e = q.pop();
 		if( e.getType() == QUIT )
 		{
+			ScopedLock l(queueMutex);
 //			SystemLog("Player Manager is asked to die");
 //			SDL_PauseAudio(1);
 			runloop = shouldRun = false;
 		}
 		else if( e.getType() == STOP )
 		{
+			ScopedLock l(queueMutex);
 //			SDL_PauseAudio(1);
 			state = STOPPED;
 		}
 		else if( e.getType() == PLAY )
 		{
+			ScopedLock l(queueMutex);
 //			SDL_PauseAudio(0);
 			state = PLAYING;
 		}
 		else
 		{
+			ScopedLock l(queueMutex);
 /*			if( state == PLAYING )
 			{
 				SystemError("Song already playing: can't play two songs at once");

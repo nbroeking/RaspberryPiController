@@ -90,11 +90,12 @@ void Socket::mainLoop()
 		}
 		delete [] buffer;	
 	}
-
+	SystemLog("Done reading");
 	owner->socketDestroyed(this);
 }
 void Socket::pleaseDie()
 {
+	shutdown(socket, SHUT_RDWR);
 	ScopedLock s(loopLock);
 	shouldRun = false;
 

@@ -36,7 +36,8 @@ serverAddress()
  
 }
 ServerSocket::~ServerSocket()
-{	
+{
+	SystemLog("Started destructing the server socket");	
 	if( (th != NULL)&&(th->joinable()))
 	{
 		this->th->join();
@@ -83,15 +84,20 @@ void ServerSocket::mainLoop()
 
 	while( getMode() )
 	{
-		this->accept(); //Blocking
+		SystemLog("Preparing for accept");
+		if( this->accept() < 0)
+		{
+			return;
+		}
 	}
 }
 
 void ServerSocket::pleaseDie()
 {
+	
+	shutdown(socket, SHUT_RDWR);
 	ScopedLock s(loopLock);
 	shouldRun = false;
-	shutdown(socket, SHUT_RDWR);
 	//If needed we wake up the blocking socket
 }
 
@@ -114,7 +120,7 @@ int ServerSocket::accept()
 	if( newsocket < 0 )
 	{
 		perror("Pi Error: Error accepting socket");
-		return newsocket;
+		return -1;
 	}
 	//Create event with file descriptor
 
