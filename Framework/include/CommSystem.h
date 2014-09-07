@@ -16,6 +16,7 @@
 #include "PlayerSystem.h"
 #include <vector>
 #include "Socket.h"
+#include "Pin.h"
 
 class CommManager 
 {
@@ -40,7 +41,9 @@ protected:
 	std::thread* th;
 
 	std::vector<Socket*> connections;
-	std::vector<Socket*> deletion;	
+	std::vector<Socket*> deletion;
+	
+	Pin pin17;
 	//Thread Stuff
 	//Methods
 	virtual void mainLoop();

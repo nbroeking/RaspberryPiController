@@ -2,7 +2,7 @@
 #include "ScopedLock.h"
 #include <stdlib.h>
 #include "Log.h"
-
+#include "Pin.h"
 #include "ServerSocket.h"
 
 using namespace std;
@@ -11,7 +11,8 @@ CommManager::CommManager(Player* play):
 queueMutex(),
 q(),
 connections(),
-deletion()
+deletion(),
+pin17("17")
 {	
 	player = play;
 	player->registerComm(this);
@@ -120,6 +121,11 @@ void CommManager::mainLoop()
 				connections.erase(it);
 			}
 		}
+		else if( e.getType() == SEND )
+		{
+			
+
+		}
 		else //Its a player event
 		{
 			SystemLog("CommManager Manager received an event");
@@ -140,6 +146,7 @@ void CommManager::socketCreated(Socket* sock)
 		return;
 	}
 	connections.push_back(sock);
+	pin17.on();
 	SystemLog("Socket registered with the Comm Manager");
 }
 void CommManager::socketDestroyed(Socket* sock)
@@ -161,6 +168,7 @@ void CommManager::socketDestroyed(Socket* sock)
 	e.setType(CLEANUP);
 
 	q.push(e);
+	pin17.off();
 }
 void CommManager::pleaseDie()
 {

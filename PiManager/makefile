@@ -1,6 +1,7 @@
-CC=g++
-LL=g++
-#CC=/usr/bin/arm-linux-gnueabi-gcc-4.7'
+#CC=g++
+#LL=g++
+CC=/usr/bin/arm-linux-gnueabi-g++-4.7
+LL=/usr/bin/arm-linux-gnueabi-g++-4.7
 
 INCLUDE=  -I/home/nbroeking/Documents/Framework/include \
 -I/home/nbroeking/Documents/Librarys/x86/include \

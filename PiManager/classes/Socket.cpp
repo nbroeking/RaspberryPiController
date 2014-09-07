@@ -91,6 +91,13 @@ void Socket::mainLoop()
 				e.setType(PAUSE);
 				owner->addEvent(e);
 			}
+			else if( command == "SYNC" )
+			{
+				SystemLog("Sync");
+				Event e;
+				e.setType(SYNC);
+				owner->addEvent(e);
+			}
 			else
 			{
 				SystemError("Error unknown command arrived");

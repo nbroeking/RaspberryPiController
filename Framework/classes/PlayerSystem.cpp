@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "Log.h"
 #include <SDL/SDL.h>
+#include "CommSystem.h"
 //#include <SDL/SDL_mixer.h>
 
 //#include "QtMultimedia/QtMultimedia"
@@ -112,6 +113,27 @@ void Player::mainLoop()
 //			SDL_PauseAudio(0);
 			state = PLAYING;
 			SystemLog("Player Manager Played Song Event");
+		}
+		else if( e.getType() ==SYNC )
+		{
+			ScopedLock l(queueMutex);
+			Event ne;
+			ne.setType(SEND);
+			
+			if( state == PLAYING)
+			{
+				ne.setFD(0);
+			}
+			else if( state == STOPPED )
+			{
+				ne.setFD(1);
+			}
+			else
+			{
+				ne.setFD(2);
+			}
+			
+			communications->addEvent(ne);		
 		}
 		else
 		{
