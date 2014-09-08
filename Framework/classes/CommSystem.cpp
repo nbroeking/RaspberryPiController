@@ -75,17 +75,14 @@ void CommManager::mainLoop()
 			SystemLog("Server Socket has been asked to die");
 			ScopedLock l(queueMutex); 
 			//Clean up the sockets
-			SystemLog("Before connections");
 			for( std::vector<Socket*>::iterator it = connections.begin(); it != connections.end(); ++it)
 			{
 				(*it)->pleaseDie();
 			}
-			SystemLog("Middle Connections");
 			for( std::vector<Socket*>::iterator it = connections.begin(); it != connections.end(); ++it)
 			{
 				delete *it;
 			}
-			SystemLog("Almost there");
 			connections.erase(connections.begin(), connections.end());
 			deletion.erase(deletion.begin(), deletion.end());
 			SystemLog("Communications finished processing quit event");
@@ -123,8 +120,29 @@ void CommManager::mainLoop()
 		}
 		else if( e.getType() == SEND )
 		{
-			
+			SystemLog("Sending data to the clients");
+			std::string sendstring;
 
+			std::vector<std::string> sendSongs = e.getSongs();
+			if (sendSongs.empty() )
+			{
+				sendstring = "1";
+				sendstring += e.getFD() +'0';
+			}
+			else
+			{
+				sendstring = "0";
+				sendstring += e.getFD();
+				for( std::vector<std::string>::iterator it = sendSongs.begin(); it != sendSongs.end(); ++it)
+				{
+					sendstring = sendstring + ","+ *it;
+				}
+			}
+			sendstring += ",";
+			for( std::vector<Socket*>::iterator t = connections.begin(); t != connections.end(); ++t )
+			{
+				(*t)->write(sendstring);
+			}							
 		}
 		else //Its a player event
 		{
@@ -147,6 +165,10 @@ void CommManager::socketCreated(Socket* sock)
 	}
 	connections.push_back(sock);
 	pin17.on();
+	Event e;
+	e.setType(SYNC);
+	q.push(e);
+
 	SystemLog("Socket registered with the Comm Manager");
 }
 void CommManager::socketDestroyed(Socket* sock)

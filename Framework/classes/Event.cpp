@@ -2,17 +2,21 @@
 #include "ScopedLock.h"
 
 Event::Event():
-m()
+m(),
+songs()
 {
 	ScopedLock s(m);
 	type = NOOP;
+	fd = 0;
 }
 Event::Event(const Event& event):
-m()
+m(),
+songs()
 {
 	//Each event must have its own mutex
 	this->type = event.type;
 	this->fd = event.fd;
+	this->songs = event.songs;
 }
 Event::~Event()
 {
@@ -23,6 +27,7 @@ Event& Event::operator= (const Event& event )
 	//Hopefully thread safe but probably not
 	this->type = event.type;
 	this->fd = event.fd;
+	this->songs = event.songs;
 	return *this;
 }
 Type Event::getType()
@@ -46,4 +51,14 @@ void Event::setFD(int x)
 {
 	ScopedLock s(m);
 	fd = x;
+}
+std::vector<std::string> Event::getSongs()
+{
+	ScopedLock s(m);
+	return songs;
+}
+void Event::setSongs(std::vector<std::string> t)
+{
+	ScopedLock s(m);
+	songs = t;
 }

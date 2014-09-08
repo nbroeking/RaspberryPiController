@@ -22,7 +22,7 @@ class Socket
 public:
     	Socket( int fd, CommManager* manager = NULL) ;
 	~Socket();
-
+	void write(std::string);
 	void pleaseDie();
 private:
 	int socket; //FD

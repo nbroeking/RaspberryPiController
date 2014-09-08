@@ -38,7 +38,8 @@ protected:
 	
 	BlockingQueue q;
 	std::thread* th;
-	
+
+	std::vector<std::string> songs;	
 	//Audio settings
 /*	SDL_AudioSpec audio;
 	

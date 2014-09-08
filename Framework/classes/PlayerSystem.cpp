@@ -4,6 +4,8 @@
 #include "Log.h"
 #include <SDL/SDL.h>
 #include "CommSystem.h"
+#include "dirent.h"
+
 //#include <SDL/SDL_mixer.h>
 
 //#include "QtMultimedia/QtMultimedia"
@@ -13,7 +15,8 @@ static Player* p = NULL;
 
 Player::Player():
 queueMutex(),
-q()//,
+q(),
+songs()//,
 //audio()
 {	
 	ScopedLock s(queueMutex);
@@ -23,6 +26,32 @@ q()//,
 	isRunning = false;
 	shouldRun = false;
 	th = NULL;
+	
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir ("/home/nbroeking/Documents/PiManager/Media")) != NULL) 
+	{
+  		/* print all the files and directories within directory */
+  		while ((ent = readdir (dir)) != NULL) 
+		{
+			if( strcmp(ent->d_name,".") && strcmp(ent->d_name,".."))
+			{
+    				printf ("Optional Song: %s\n", ent->d_name);
+				songs.push_back(ent->d_name);
+			}
+			else
+			{
+				printf( "Can not play: %s\n" , ent->d_name);
+			}
+  		}
+  		closedir (dir);
+	} 
+	else 
+	{
+  		/* could not open directory */
+  		perror ("PiError: Can not open music directory ");
+  		return;
+	}	
 
 /*	if( SDL_LoadWAV("/home/nbroeking/Documents/PiManager/Media/onemorenight.wav", &audio, &audio_chunk, &audio_len ) == NULL)
 	{
@@ -132,6 +161,7 @@ void Player::mainLoop()
 			{
 				ne.setFD(2);
 			}
+			ne.setSongs(songs);
 			
 			communications->addEvent(ne);		
 		}

@@ -14,7 +14,7 @@ enum Type { NOOP, QUIT, STOP, PLAY, CLEANUP, NEWSOCKET, PAUSE, SYNC, SEND, NUM};
 
 #include <mutex>
 #include <string>
-
+#include <vector>
 class Event
 {
 public:
@@ -26,12 +26,16 @@ public:
 	void setType(Type);
 	int getFD();
 	void setFD(int);
+	std::vector<std::string> getSongs();
+	void setSongs(std::vector<std::string>);
+
 protected:
 private:
 	std::mutex m;
 	Type type;
 
 	int fd;
+	std::vector<std::string> songs;
 	
 };
 #endif //End Declaration

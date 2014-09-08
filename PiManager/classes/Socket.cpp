@@ -109,6 +109,20 @@ void Socket::mainLoop()
 	SystemLog("Done reading");
 	owner->socketDestroyed(this);
 }
+void Socket::write(std::string send)
+{
+	size_t len = send.length();
+	char* tosend = (char*)send.c_str();
+	int ret = ::write(socket, tosend, len);
+	if( ret < 0)
+	{
+		fprintf(stderr, "PiError: Error writing to socket\n");
+	}
+	else
+	{
+		SystemLog("Wrote to the sockets");
+	}
+}
 void Socket::pleaseDie()
 {
 	shutdown(socket, SHUT_RDWR);
