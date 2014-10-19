@@ -6,7 +6,7 @@
 #include "CommSystem.h"
 #include "dirent.h"
 
-//#include <SDL/SDL_mixer.h>
+#include <SDL/SDL_mixer.h>
 
 //#include "QtMultimedia/QtMultimedia"
 using namespace std;
@@ -16,8 +16,8 @@ static Player* p = NULL;
 Player::Player():
 queueMutex(),
 q(),
-songs()//,
-//audio()
+songs(),
+audio()
 {	
 	ScopedLock s(queueMutex);
 	state = IDLE;
@@ -53,7 +53,7 @@ songs()//,
   		return;
 	}	
 
-/*	if( SDL_LoadWAV("/home/nbroeking/Documents/PiManager/Media/onemorenight.wav", &audio, &audio_chunk, &audio_len ) == NULL)
+	if( SDL_LoadWAV("/home/nbroeking/Documents/PiManager/Media/onemorenight.wav", &audio, &audio_chunk, &audio_len ) == NULL)
 	{
 
 	}	
@@ -63,8 +63,8 @@ songs()//,
 	if( SDL_OpenAudio(&audio, NULL) < 0 )
 	{
 		fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
-	}			
-*/	
+	}
+	SDL_PauseAudio(0);				
 }
 Player::~Player()
 {
@@ -74,8 +74,8 @@ Player::~Player()
 	queueMutex.lock();
 	if( state != IDLE )
 	{
-	//		SDL_CloseAudio();
-	//	SDL_FreeWAV(audio_chunk);
+			SDL_CloseAudio();
+		SDL_FreeWAV(audio_chunk);
 	}
 	p = NULL;
 	if( (th != NULL)&&(th->joinable()))
@@ -120,8 +120,8 @@ void Player::mainLoop()
 		if( e.getType() == QUIT )
 		{
 			ScopedLock l(queueMutex);
-//			SystemLog("Player Manager is asked to die");
-//			SDL_PauseAudio(1);
+			SystemLog("Player Manager is asked to die");
+			SDL_PauseAudio(1);
 			runloop = shouldRun = false;
 		}
 		else if( e.getType() == NOOP )
@@ -131,7 +131,7 @@ void Player::mainLoop()
 		else if( e.getType() == STOP )
 		{
 			ScopedLock l(queueMutex);
-//			SDL_PauseAudio(1);
+			SDL_PauseAudio(1);
 			state = STOPPED;
 
 			SystemLog("Player Manager Stoped Song Event");
@@ -139,7 +139,7 @@ void Player::mainLoop()
 		else if( e.getType() == PLAY )
 		{
 			ScopedLock l(queueMutex);
-//			SDL_PauseAudio(0);
+			SDL_PauseAudio(0);
 			state = PLAYING;
 			SystemLog("Player Manager Played Song Event");
 		}
@@ -169,7 +169,7 @@ void Player::mainLoop()
 		{
 			SystemLog("Player Manager Started Song Event");
 			ScopedLock l(queueMutex);
-/*			if( state == PLAYING )
+			if( state == PLAYING )
 			{
 				SystemError("Song already playing: can't play two songs at once");
 				continue;
@@ -180,10 +180,10 @@ void Player::mainLoop()
 			SystemLog("Trying to play a song with SDL");
 			
 			audio_pos = audio_chunk;
-*/	
+	
 			//Start Playing
 			/* Let the callback function play the audio chunk */
-//			SDL_PauseAudio(0);
+			SDL_PauseAudio(0);
 
 		}
 	}
@@ -209,26 +209,26 @@ void Player::addEvent(Event e)
 	queueMutex.unlock();
 	q.push(e);
 }
-//void Player::playmusic(void* udata, Uint8 *stream, int len)
-//{
+void Player::playmusic(void* udata, Uint8 *stream, int len)
+{
 	/* Only play if we have data left */
-/*	if ( audio_len == 0 )
+	if ( audio_len == 0 )
 	{
 		return;
 	}
-*/
+
 	/* Mix as much data as possible */
-/*	len = ( len > (int)audio_len ? audio_len : len );
+	len = ( len > (int)audio_len ? audio_len : len );
 	SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME);
 	audio_pos += len;
 	audio_len -= len;
-*/
-//}
+
+}
 /* The audio function callback takes the following parameters:
   stream:  A pointer to the audio buffer to be filled
   len:     The length (in bytes) of the audio buffer
 */
-/*void play_audio(void *udata, Uint8 *stream, int len)
+void play_audio(void *udata, Uint8 *stream, int len)
 {
 	if( p == NULL)
 	{
@@ -236,4 +236,4 @@ void Player::addEvent(Event e)
 		return;
 	}
 	p->playmusic(udata, stream, len);
-}*/
+}

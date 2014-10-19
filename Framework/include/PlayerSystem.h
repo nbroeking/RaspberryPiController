@@ -11,7 +11,7 @@
 #include "EventQueue.h"
 #include <mutex>
 #include <thread>
-//#include "SDL/SDL.h"
+#include "SDL/SDL.h"
 
 
 class CommManager;
@@ -26,7 +26,7 @@ public:
 	virtual void run();
 	virtual void pleaseDie();
 	virtual void addEvent(Event);	
-//	void playmusic(void* udata, Uint8 *stream, int len);
+	void playmusic(void* udata, Uint8 *stream, int len);
 	virtual void registerComm(CommManager*);	
 protected:
 	bool isRunning;
@@ -41,12 +41,12 @@ protected:
 
 	std::vector<std::string> songs;	
 	//Audio settings
-/*	SDL_AudioSpec audio;
+	SDL_AudioSpec audio;
 	
 	Uint8 *audio_chunk;
 	Uint32 audio_len;
 	Uint8 *audio_pos;
-*/
+
 	
 	//Thread Stuff
 	//Methods
@@ -56,8 +56,8 @@ protected:
 
 };
 
-/*extern "C" {
+extern "C" {
 
 extern void play_audio(void* udata, Uint8 *stream, int len);
-}*/
+}
 #endif

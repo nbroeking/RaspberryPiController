@@ -14,9 +14,10 @@
 int main()
 {
 
-/*	try 
+	try 
 	{
         	SDL sdl(SDL_INIT_AUDIO);
+		return Application::run();
 	}
 	catch (const PiException& err) 
 	{
@@ -24,9 +25,8 @@ int main()
 		std::cerr << err.what() << std::endl;
 		return 1;
 	}
-*/	
+	
 	//If we could start SDL then we can start running the app
-
 	//Return the result of the running app
-	return Application::run();
+	return 1;
 }
