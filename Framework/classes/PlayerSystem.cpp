@@ -64,7 +64,6 @@ audio()
 	{
 		fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
 	}
-	SDL_PauseAudio(0);				
 }
 Player::~Player()
 {

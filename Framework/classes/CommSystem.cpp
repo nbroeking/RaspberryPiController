@@ -22,6 +22,10 @@ pin17("17")
 	shouldRun = false;
 	th = NULL;
 
+	Event e;
+	e.setType(START);
+	player->addEvent(e);
+
 }
 CommManager::~CommManager()
 {
