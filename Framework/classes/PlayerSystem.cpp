@@ -64,6 +64,24 @@ audio()
 	{
 		fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
 	}
+
+			SystemLog("Player Manager Started Song Event");
+			if( state == PLAYING )
+			{
+				SystemError("Song already playing: can't play two songs at once");
+			}
+
+			state = PLAYING;
+
+			SystemLog("Trying to play a song with SDL");
+			
+			audio_pos = audio_chunk;
+	
+			//Start Playing
+			/* Let the callback function play the audio chunk */
+			SDL_PauseAudio(0);
+
+
 }
 Player::~Player()
 {
