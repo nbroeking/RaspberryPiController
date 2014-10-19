@@ -228,7 +228,6 @@ void Player::addEvent(Event e)
 }
 void Player::playmusic(void* udata, Uint8 *stream, int len)
 {
-	printf("SDLError: %s\n", SDL_GetError());	
 	/* Only play if we have data left */
 	if ( audio_len == 0 )
 	{
