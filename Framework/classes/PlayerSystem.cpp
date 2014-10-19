@@ -29,7 +29,7 @@ songs()//,
 	
 	DIR *dir;
 	struct dirent *ent;
-	if ((dir = opendir ("/home/nbroeking/Documents/PiManager/Media")) != NULL) 
+	if ((dir = opendir ("/home/nbroeking/Media")) != NULL) 
 	{
   		/* print all the files and directories within directory */
   		while ((ent = readdir (dir)) != NULL) 
