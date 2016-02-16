@@ -3,11 +3,11 @@ LL=g++
 #CC=/usr/bin/arm-linux-gnueabi-g++-4.7
 #LL=/usr/bin/arm-linux-gnueabi-g++-4.7
 
-INCLUDE=  -I/home/nbroeking/Documents/Framework/include \
--I/home/nbroeking/Documents/Librarys/x86/include \
--I/home/nbroeking/Documents/Librarys/x86 \
--I/home/nbroeking/Documents/Librarys/x86/5.3/gcc_64/include \
--I/home/nbroeking/Documents/PiManager/include
+INCLUDE=  -I../Framework/include \
+-I../Librarys/x86/include \
+-I../Librarys/x86 \
+-I../Librarys/x86/5.3/gcc_64/include \
+-I include
 
 LDFLAGS= -Wl,--no-as-needed -lpthread
 CFLAGS= -Wall -g  -Wl,--no-as-needed $(INCLUDE)
