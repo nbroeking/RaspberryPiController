@@ -11,7 +11,6 @@
 #include <arpa/inet.h> 
 #include "Log.h"
 #include "ScopedLock.h"
-#include "CommSystem.h"
 using namespace std;
 
 Socket::Socket( int fd, CommManager* manager):

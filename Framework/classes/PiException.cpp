@@ -1,5 +1,4 @@
 #include "PiException.h"
-#include "SDL/SDL.h"
 
 PiException::PiException():
 exception(), 

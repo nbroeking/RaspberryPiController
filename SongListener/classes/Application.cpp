@@ -1,8 +1,8 @@
-#include "MainApplication.h"
 #include "ScopedLock.h"
 #include "Event.h"
 #include "Log.h"
-#include "ServerSocket.h"
+#include "Application.h"
+
 using namespace std;
 
 //Singleton methods

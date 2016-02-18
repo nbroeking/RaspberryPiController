@@ -1,7 +1,7 @@
 CC=g++
 LL=g++
-#CC=/usr/bin/arm-linux-gnueabi-g++-4.7
-#LL=/usr/bin/arm-linux-gnueabi-g++-4.7
+ARMCC=/usr/bin/arm-linux-gnueabi-g++-4.7
+ARMLL=/usr/bin/arm-linux-gnueabi-g++-4.7
 
 INCLUDE=  -I../Framework/include \
 -I../Librarys/x86/include \
@@ -9,9 +9,18 @@ INCLUDE=  -I../Framework/include \
 -I../Librarys/x86/5.3/gcc_64/include \
 -I include
 
-LDFLAGS= -Wl,--no-as-needed -lpthread
-CFLAGS= -Wall -g  -Wl,--no-as-needed $(INCLUDE)
+LDFLAGS= -Wl,--no-as-needed -lpthread -lpulse `pkg-config --libs libpulse-simple`
+CFLAGS= -Wall -g  -Wl,--no-as-needed $(INCLUDE) `pkg-config --cflags libpulse-simple`
+
+ARMCFLAGS=$(CFLAGS)
+ARMLDFLAGS=$(LDFLAGS)
+
 LIBS = -ldl -L tmp -L usr/lib/
+
+export ARMCC
+export ARMLL
+export ARMCFLAGS
+export ARMLDFLAGS
 
 export CC
 export LL
@@ -24,6 +33,9 @@ export LIBS
 all:
 	$(MAKE) -f raspberrypi.mk
 
+pigen:
+	-mkdir obs
+	./gen.sh arm
 gen:
 	-mkdir obs
 	./gen.sh

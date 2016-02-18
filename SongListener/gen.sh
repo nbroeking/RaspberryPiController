@@ -6,7 +6,7 @@ obs=()
 src=()
 libs=()
 
-BINARY_NAME="Manager"
+BINARY_NAME="capture"
 
 # Iterate through and find the
 # c++ source files 
@@ -27,7 +27,7 @@ done
 
 # Iterate through and find the
 # c++ source files 
-for i in $(find ../PiManager/classes/ | egrep '.*\.c(pp|xx)?$') ; do
+for i in $(find ./classes/ | egrep '.*\.c(pp|xx)?$') ; do
 	# add this file to the list of
 	# sources
 	deps="$( echo $i | sed 's/^src\/*//')"
@@ -46,10 +46,19 @@ exec 3<> raspberrypi.mk
 
 
 # some commonly used files to generate
-echo "CC=$CC">&3
-echo "LL=$LL">&3
-echo "CFLAGS=$CFLAGS">&3
-echo "LDFLAGS=$LDFLAGS">&3
+echo $1
+if [ $1 == "arm" ]; then
+	echo "CC=$ARMCC">&3
+	echo "LL=$ARMLL">&3
+	echo "CFLAGS=$ARMCFLAGS">&3
+	echo "LDFLAGS=$ARMLDFLAGS">&3
+else
+	echo "CC=$CC">&3
+	echo "LL=$LL">&3
+	echo "CFLAGS=$CFLAGS">&3
+	echo "LDFLAGS=$LDFLAGS">&3
+fi
+
 echo "LIBS=$LIBS">&3
 echo 'OBJECTS='${obs[@]}>&3
 echo 'BINARY='$BINARY_NAME>&3

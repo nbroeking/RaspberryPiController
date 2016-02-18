@@ -20,7 +20,7 @@
 #include <pulse/error.h>
 #define BUFSIZE 1024
 /* A simple routine calling UNIX write() in a loop */
-static ssize_t loop_write(int fd, const void*data, size_t size) {
+/*static ssize_t loop_write(int fd, const void*data, size_t size) {
     ssize_t ret = 0;
     while (size > 0) {
         ssize_t r;
@@ -33,7 +33,7 @@ static ssize_t loop_write(int fd, const void*data, size_t size) {
         size -= (size_t) r;
     }
     return ret;
-}
+}*/
 int main(int argc, char*argv[]) {
     /* The sample type to use */
     static const pa_sample_spec ss = {
@@ -56,12 +56,15 @@ int main(int argc, char*argv[]) {
             fprintf(stderr, __FILE__": pa_simple_read() failed: %s\n", pa_strerror(error));
             goto finish;
         }
-        /* And write it to STDOUT */
-        if (loop_write(STDOUT_FILENO, buf, sizeof(buf)) != sizeof(buf)) {
-            fprintf(stderr, __FILE__": write() failed: %s\n", strerror(errno));
-            goto finish;
-        }
-    }
+
+		/* Run a fft and print value to STDERR*/
+	
+		printf("Waveform Start\n");
+		for( unsigned int i = 0; i < sizeof(buf); i++){
+			printf("%d\n", buf[i]);
+		}	    
+		printf("End of Waveform\n");
+}
     ret = 0;
 finish:
     if (s)
