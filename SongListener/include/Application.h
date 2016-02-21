@@ -14,7 +14,9 @@ Written By: Nicolas Broeking */
 #include <pulse/error.h>
 #include <fftw3.h>
 
-#define BUFSIZE 2048
+#define BUFSIZE 4096
+#define INSIZE BUFSIZE/2
+#define OUTPUTSIZE BUFSIZE/2+1
 
 class MainApplication
 {
@@ -26,12 +28,11 @@ public:
 	virtual void pleaseDie();
 
 protected:
-	
-    
+
     //FFT Variables
     fftw_plan p;
-    double in[BUFSIZE];
-    fftw_complex out[BUFSIZE];
+    double in[INSIZE];
+    fftw_complex out[OUTPUTSIZE];
 
     bool isRunning;
     std::atomic<bool> shouldRun;

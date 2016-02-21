@@ -38,11 +38,18 @@ int MainApplication::run()
         
         //THis is a bad check so we only do the fft on real data
         if( buf[0] != 0){
+           
+            //Combining the left and right streams
+            for( int i = 0; i < INSIZE; i++){
+                int8_t left = buf[i*2];
+                int8_t right = buf[i*2 +1];
 
-            memcpy(in, buf, BUFSIZE);
-
-            for( int i =0; i < BUFSIZE; i++){
-                in[i] = buf[i];
+                in[i] = ((float)left + (float)right) / 65536.f;
+            } 
+           
+            //Windowing I think 
+            for( int i =0; i < INSIZE; i++){
+                //in[i] = buf[i];
                 in[i] *= 0.54f - 0.46f * cosf( (3.1415926 * 2.f * i) / (BUFSIZE - 1) ); 
             }
 
@@ -50,12 +57,12 @@ int MainApplication::run()
 
             fftw_execute(p);
               // I rewrite to out[i][0] squared absolute value of a complex number out[i].
-            for (uint i = 0; i < BUFSIZE; ++i)
+            for (uint i = 0; i < OUTPUTSIZE; ++i)
             {
                 out[i][0] = out[i][0]*out[i][0] + out[i][1]*out[i][1];
             }
             
-            for( int i = 0; i < BUFSIZE; i++){
+            for( int i = 0; i < OUTPUTSIZE; i++){
                 cerr << start << ", " <<  out[i][0] << endl;
                 start += 10.7666;
             }
@@ -84,7 +91,14 @@ runMutex()
 	shouldRun.store(true);
 
     s = NULL;
-    
+   
+   for (uint i = 0; i < BUFSIZE; ++i){
+        in[i] = 0.f;
+    }
+   for (uint i = 0; i < OUTPUTSIZE; ++i){
+        out[i][0] = 0.0;
+        out[i][1] = 0.0;
+    }
     p = fftw_plan_dft_r2c_1d(BUFSIZE, in, out, FFTW_ESTIMATE); 
 }
 
