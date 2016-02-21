@@ -18,56 +18,31 @@
 #include <errno.h>
 #include <pulse/simple.h>
 #include <pulse/error.h>
-#define BUFSIZE 1024
-/* A simple routine calling UNIX write() in a loop */
-/*static ssize_t loop_write(int fd, const void*data, size_t size) {
-    ssize_t ret = 0;
-    while (size > 0) {
-        ssize_t r;
-        if ((r = write(fd, data, size)) < 0)
-            return r;
-        if (r == 0)
-            break;
-        ret += r;
-        data = (const uint8_t*) data + r;
-        size -= (size_t) r;
-    }
-    return ret;
-}*/
-int main(int argc, char*argv[]) {
-    /* The sample type to use */
-    static const pa_sample_spec ss = {
-        .format = PA_SAMPLE_S16LE,
-        .rate = 44100,
-        .channels = 2
-    };
-    pa_simple *s = NULL;
-    int ret = 1;
-    int error;
-    /* Create the recording stream */
-    if (!(s = pa_simple_new(NULL, argv[0], PA_STREAM_RECORD, NULL, "record", &ss, NULL, NULL, &error))) {
-        fprintf(stderr, __FILE__": pa_simple_new() failed: %s\n", pa_strerror(error));
-        goto finish;
-    }
-    for (;;) {
-        uint8_t buf[BUFSIZE];
-        /* Record some data ... */
-        if (pa_simple_read(s, buf, sizeof(buf), &error) < 0) {
-            fprintf(stderr, __FILE__": pa_simple_read() failed: %s\n", pa_strerror(error));
-            goto finish;
-        }
+#include <fftw3.h>
+#include "Application.h"
+#include <signal.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
 
-		/* Run a fft and print value to STDERR*/
-	
-		printf("Waveform Start\n");
-		for( unsigned int i = 0; i < sizeof(buf); i++){
-			printf("%d\n", buf[i]);
-		}	    
-		printf("End of Waveform\n");
+MainApplication *globalapp;
+
+extern "C" {
+    void timeToDie(int s);
+};
+
+int main(int argc, char*argv[]) {
+
+    MainApplication app;
+    globalapp = &app;
+   
+    signal (SIGINT, timeToDie);
+
+    return app.run();
 }
-    ret = 0;
-finish:
-    if (s)
-        pa_simple_free(s);
-    return ret;
+
+void timeToDie(int s){
+    printf("Caught signal %d\n",s);
+
+    globalapp->pleaseDie();
 }

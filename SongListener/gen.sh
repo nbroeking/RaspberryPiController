@@ -13,7 +13,7 @@ BINARY_NAME="capture"
 
 cnt=0
 
-for i in $(find ../Framework/classes/ | egrep '.*\.c(pp|xx)?$') ; do
+for i in $(find ../Framework/src/ | egrep '.*\.c(pp|xx)?$') ; do
 	# add this file to the list of
 	# sources
 	deps="$( echo $i | sed 's/^src\/*//')"
@@ -27,7 +27,7 @@ done
 
 # Iterate through and find the
 # c++ source files 
-for i in $(find ./classes/ | egrep '.*\.c(pp|xx)?$') ; do
+for i in $(find ./src/ | egrep '.*\.c(pp|xx)?$') ; do
 	# add this file to the list of
 	# sources
 	deps="$( echo $i | sed 's/^src\/*//')"

@@ -9,7 +9,7 @@ INCLUDE=  -I../Framework/include \
 -I../Librarys/x86/5.3/gcc_64/include \
 -I include
 
-LDFLAGS= -Wl,--no-as-needed -lpthread -lpulse `pkg-config --libs libpulse-simple`
+LDFLAGS= -Wl,--no-as-needed -lpthread -lpulse -lfftw3 `pkg-config --libs libpulse-simple`
 CFLAGS= -Wall -g  -Wl,--no-as-needed $(INCLUDE) `pkg-config --cflags libpulse-simple`
 
 ARMCFLAGS=$(CFLAGS)
@@ -38,7 +38,7 @@ pigen:
 	./gen.sh arm
 gen:
 	-mkdir obs
-	./gen.sh
+	./gen.sh host
 clean:
 	-rm -rf obs
 	-rm Manager

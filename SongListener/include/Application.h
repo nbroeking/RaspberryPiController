@@ -8,25 +8,42 @@ Written By: Nicolas Broeking */
 
 #include "EventQueue.h"
 #include <mutex>
+#include <atomic>
+#include <errno.h>
+#include <pulse/simple.h>
+#include <pulse/error.h>
+#include <fftw3.h>
+
+#define BUFSIZE 2048
 
 class MainApplication
 {
 public:
-	static MainApplication* app;
-	static std::mutex getMutex;
-	static MainApplication* getApplication();
-	static void cleanUp();
+   	MainApplication();
+	virtual ~MainApplication();
 
-	virtual int run();
+    virtual int run();
 	virtual void pleaseDie();
 
 protected:
-	MainApplication();
-	virtual ~MainApplication();
-	virtual void applicationWillLaunch();
-	virtual void applicationWillTerminate();
-	bool isRunning;
-	bool shouldRun;
+	
+    
+    //FFT Variables
+    fftw_plan p;
+    double in[BUFSIZE];
+    fftw_complex out[BUFSIZE];
+
+    bool isRunning;
+    std::atomic<bool> shouldRun;
+
+    const pa_sample_spec ss = {
+        .format = PA_SAMPLE_S16LE,
+        .rate = 44100,
+        .channels = 2
+    };
+    pa_simple *s;
+    int error; 
+
 
 	std::mutex m; //Access Mutex
 	BlockingQueue q;
