@@ -18,7 +18,8 @@ int MainApplication::run()
 	}
 	m.lock();
 	isRunning = true;
-	//Initilization
+	
+    //Initilization
 	shouldRun.store(true);
 
     if (!(s = pa_simple_new(NULL, "Song Listener", PA_STREAM_RECORD, NULL, "record", &ss, NULL, NULL, &error))) {
@@ -56,7 +57,8 @@ int MainApplication::run()
             float start = 0.0;
 
             fftw_execute(p);
-              // I rewrite to out[i][0] squared absolute value of a complex number out[i].
+
+            // I rewrite to out[i][0] squared absolute value of a complex number out[i].
             for (uint i = 0; i < OUTPUTSIZE; ++i)
             {
                 out[i][0] = out[i][0]*out[i][0] + out[i][1]*out[i][1];
@@ -64,7 +66,8 @@ int MainApplication::run()
             
             for( int i = 0; i < OUTPUTSIZE; i++){
                 cerr << start << ", " <<  out[i][0] << endl;
-                start += 10.7666;
+                start += MAXFREQ/INSIZE;
+
             }
             exit(0);          
         }
